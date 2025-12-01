@@ -69,8 +69,8 @@ Array.prototype.look = function (
   })
 }
 
-Array.prototype.transposed = function (this) {
-  return this.reduce((a: any[], c) => {
+Array.prototype.transposed = function <T>(this: T[][]) {
+  return this.reduce((a: T[][], c) => {
     c.forEach((item, i) => {
       if (a.length <= i) a.push([])
       a[i].push(item)
@@ -85,5 +85,5 @@ Array.prototype.flatten = function (this) {
 
 Array.prototype.windowed = function (this, windowSize: number) {
   return this.map((_, i) => range(0,windowSize-1).map(r => this[i+r]))
-  .filter((l,i) => i%windowSize == 0)
+  .filter((_l,i) => i%windowSize == 0)
 }
