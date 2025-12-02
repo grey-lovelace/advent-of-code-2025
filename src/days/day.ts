@@ -25,6 +25,7 @@ export default abstract class Day {
       part: string,
       func: (input: string) => any,
       shouldRun: boolean,
+      shouldCopy: boolean,
       inputFile: string,
       tests: any[][]
     ) => {
@@ -37,7 +38,10 @@ export default abstract class Day {
       if (shouldRun) {
         const output = execute(func, inputFile);
         console.log(`${part} - ${output}\n`);
-        copy(output).then(() => console.log(`Copied answer ${output} to clipboard!`))// Copy output to clipboard so it is easy to paste into submit
+        if (shouldCopy){
+          // Copy output to clipboard so it is easy to paste into submit
+          copy(output).then(() => console.log(`Copied answer ${output} to clipboard!`))
+        }
       }
     };
 
@@ -45,6 +49,7 @@ export default abstract class Day {
       "Part1",
       this.part1,
       this.runPart1,
+      !this.runPart2,
       this.inputPart1,
       this.expectedPart1Results()
     );
@@ -52,6 +57,7 @@ export default abstract class Day {
       "Part2",
       this.part2,
       this.runPart2,
+      true,
       this.inputPart2,
       this.expectedPart2Results()
     );
