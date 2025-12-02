@@ -87,3 +87,8 @@ Array.prototype.windowed = function (this, windowSize: number) {
   return this.map((_, i) => range(0,windowSize-1).map(r => this[i+r]))
   .filter((_l,i) => i%windowSize == 0)
 }
+
+Array.prototype.sliceInHalf = function (this) {
+  const middle = Math.ceil(this.length / 2);
+  return [this.slice(0, middle), this.slice(middle)]
+}

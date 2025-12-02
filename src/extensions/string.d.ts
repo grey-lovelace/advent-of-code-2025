@@ -6,4 +6,5 @@ interface String {
     asNumber(this: string): number
     findNumbers(this: string): number[]
     matchAllAsList(this: string, regexp: RegExp): RegExpMatchArray[]
+    sliceInHalf(this: string): string[]
 }

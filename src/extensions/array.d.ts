@@ -20,6 +20,7 @@ interface Array<T> {
   count<T>(this: T[], func: (item: T) => boolean): number
   look(this: T[], func?: (item: T) => void): T[];
   transposed<T>(this: T[][]): T[][];
-  flatten<T,K extends Array<T>>(this: K[]): T[];
+  flatten<T>(this: T[][]): T[];
   windowed<T>(this: T[], windowSize: number): T[][];
+  sliceInHalf<T>(this: T[]): T[][]
 }

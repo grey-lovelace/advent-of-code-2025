@@ -15,7 +15,7 @@ String.prototype.reverse = function (this) {
 };
 
 String.prototype.findNumbers = function (this) {
-  return this.matchAllAsList(/[\-\d]+/g)
+  return this.matchAllAsList(/-?[\d]+/g)
     .map(i => i[0])
     .toNums();
 };
@@ -26,4 +26,9 @@ String.prototype.matchAllAsList = function (this, regexp) {
 
 String.prototype.asNumber = function (this) {
   return Number(this)
+}
+
+String.prototype.sliceInHalf = function (this) {
+  const middle = Math.ceil(this.length / 2);
+  return [this.slice(0, middle), this.slice(middle)]
 }
