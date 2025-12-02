@@ -12,10 +12,9 @@ export default class Day02 extends Day {
 
 const findInvalidNumbers = (input: string, validation: RegExp) =>
   input
-    .matchAllAsList(/\d+\-\d+/g)
-    .map((i) => i[0])
-    .map((pair) => pair.split("-").toNums())
-    .map((pair) => range(pair[0], pair[1]))
+    .matchAllAsList(/(?<start>\d+)\-(?<end>\d+)/g)
+    .map((i) => i["groups"]!)
+    .map(({start, end}) => range(start.asNumber(), end.asNumber()))
     .flatten()
     .unique()
     .map(String)
