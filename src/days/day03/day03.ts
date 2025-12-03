@@ -19,19 +19,21 @@ const findTotal = (input: string, digits: number) =>
 const findMaxJoltage = (bank: number[], digits: number) =>
   bank
     .entries()
-    .reduce((acc, [batteryIndex, battery]) => {
-      for (const [trackerIndex, tracker] of acc.entries()) {
-        const isEarlyEnoughInBank =
-          batteryIndex <= bank.length - (digits - trackerIndex);
-        if (isEarlyEnoughInBank && battery > tracker) {
-          return [
-            ...acc.slice(0, trackerIndex),
-            battery,
-            ...Array(digits - trackerIndex - 1).fill(0),
-          ];
-        }
-      }
-      return acc;
+    .reduce((highNumTracker, [batteryIndex, battery]) => {
+      const replaceIndex = highNumTracker
+        .entries()
+        .find(([trackerIndex, trackerNum]) => 
+          battery > trackerNum
+          // Is it early enough in the bank?
+          && batteryIndex <= bank.length - (digits - trackerIndex)
+        )?.[0]
+
+      if(replaceIndex == undefined) return highNumTracker
+      return [
+        ...highNumTracker.slice(0, replaceIndex),
+        battery,
+        ...Array(digits - replaceIndex - 1).fill(0),
+      ];
     }, Array(digits).fill(0))
     .join("")
     .asNumber();
