@@ -6,14 +6,17 @@ export default class DayTemplate extends Day {
   expectedPart2Results = () => [
     // ["sample.txt", 0]
   ];
+  override runPart1 = true
   override runPart2 = false
 
   part1 = (input: string) => {
-    return input
+    const data = input
+    return data
   }
 
   part2 = (input: string) => {
-    return input
+    const data = input
+    return data
   }
 }
 
