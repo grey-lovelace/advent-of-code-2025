@@ -1,4 +1,4 @@
-import { Grid, stringToGrid } from "../../utils/grid.ts";
+import { Grid } from "../../utils/grid.ts";
 import Day from "../day.ts";
 
 export default class Day04 extends Day {
@@ -7,10 +7,10 @@ export default class Day04 extends Day {
   expectedPart2Results = () => [["sample.txt", 43]];
 
   part1 = (input: string) =>
-    input.let(stringToGrid).let(findRemovableRolls).length;
+    input.let(Grid.fromString).let(findRemovableRolls).length;
 
   part2 = (input: string) => {
-    const grid = stringToGrid(input);
+    const grid = Grid.fromString(input);
     let rollsRemoved = 0;
     let rolls = findRemovableRolls(grid);
     while (rolls.length > 0) {

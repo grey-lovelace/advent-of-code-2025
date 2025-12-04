@@ -12,6 +12,13 @@ export class Grid<T extends string | number> {
   pointMatrix: Point<T>[][];
   points: Point<T>[];
 
+  static fromString(multiLineString: string): Grid<string> {
+    return multiLineString
+      .lines()
+      .map((line) => line.letters())
+      .let((grid) => new Grid(grid));
+  }
+
   printGrid = () =>
     this.pointMatrix.forEach((line) =>
       console.log(line.map((point) => point.val.toString()).join(""))
@@ -72,9 +79,3 @@ export const diagonalDirections = [
   "southwest",
 ] as const;
 export const directions = [...orthogonalDirections, ...diagonalDirections];
-
-export const stringToGrid = (multiLineString: string) =>
-  multiLineString
-    .lines()
-    .map((line) => line.letters())
-    .let((grid) => new Grid(grid));
