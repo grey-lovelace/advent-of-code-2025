@@ -18,14 +18,10 @@ export default class Day05 extends Day {
       .let(parseIds)
       .freshIds
       .toSorted((ids1, ids2) => ids1[0] - ids2[0])
-      .let((freshIds) => freshIds.reduce((acc, [start, end]) => ({
-          amount:
-            acc.amount +
-            Math.max(0, 1 + end - Math.max(start, acc.maxEnd + 1)),
-          maxEnd: Math.max(end, acc.maxEnd),
-        }),
-        { amount: 0, maxEnd: 0 }
-      ))
+      .reduce((acc, [start, end]) => ({
+        amount: acc.amount + Math.max(0, 1 + end - Math.max(start, acc.maxEnd + 1)),
+        maxEnd: Math.max(end, acc.maxEnd),
+      }), { amount: 0, maxEnd: 0 })
       .amount;
 }
 
