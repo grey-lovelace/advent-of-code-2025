@@ -1,4 +1,4 @@
-import { between, range } from "../../utils/range.ts";
+import { between } from "../../utils/range.ts";
 import Day from "../day.ts";
 
 export default class Day05 extends Day {
@@ -7,36 +7,33 @@ export default class Day05 extends Day {
   expectedPart2Results = () => [["sample.txt", 14]];
 
   part1 = (input: string) => {
-    const [fresh, available] = input.paragraphs();
-    const freshIds = fresh.lines().map((line) => line.split("-").map(Number));
-    return available
-      .lines()
-      .map(Number)
-      .count((id) => freshIds.some(([start, end]) => between(id, start, end)));
+    const { freshIds, availableIds } = input.let(parseIds);
+    return availableIds.count((id) =>
+      freshIds.some(([start, end]) => between(id, start, end))
+    );
   };
 
-  part2 = (input: string) => {
-    const data = input
-      .paragraphs()[0]
-      .lines()
-      .map((line) => line.split("-").map(Number))
-      .toSorted((freshIds1, freshIds2) => freshIds1[0] - freshIds2[0]);
-    let counter = 0;
-    const ranges: number[][] = [];
-    data.forEach((freshIds) => {
-      let start = freshIds[0];
-      for (const range of ranges) {
-        if (range[1] >= start) start = range[1] + 1;
-      }
-      const end = freshIds[1];
-      if (end - start >= 0) {
-        counter += end - start + 1;
-      }
-      ranges.push([start, end]);
-    });
-    return counter;
-  };
+  part2 = (input: string) =>
+    input
+      .let(parseIds)
+      .freshIds
+      .toSorted((ids1, ids2) => ids1[0] - ids2[0])
+      .let((freshIds) => freshIds.reduce((acc, [start, end]) => ({
+          amount:
+            acc.amount +
+            Math.max(0, 1 + end - Math.max(start, acc.maxEnd + 1)),
+          maxEnd: Math.max(end, acc.maxEnd),
+        }),
+        { amount: 0, maxEnd: 0 }
+      ))
+      .amount;
 }
+
+const parseIds = (input: string) =>
+  input.paragraphs().let(([fresh, available]) => ({
+    freshIds: fresh.lines().map((line) => line.split("-").map(Number)),
+    availableIds: available.lines().map(Number),
+  }));
 
 if (import.meta.main) {
   new Day05().run();
