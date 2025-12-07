@@ -4,68 +4,38 @@ import Day from "../day.ts";
 
 export default class Day07 extends Day {
   dayPath = () => import.meta.dirname!;
-  expectedPart1Results = () => [
-    ["sample.txt", 21]
-  ];
-  expectedPart2Results = () => [
-    ["sample.txt", 40]
-  ];
+  expectedPart1Results = () => [["sample.txt", 21]];
+  expectedPart2Results = () => [["sample.txt", 40]];
 
-  part1 = (input: string) => {
-    const grid = input
-      .let(Grid.fromString)
-    const start = grid.points.find(p => p.val==="S")
-    let currentPoints = [start]
-    let splitCount = 0
-    while (currentPoints.length > 0) {
-      currentPoints = currentPoints
-        .mapNonNull(p => p?.south())
-        .mapNonNull(p => {
-          if (p?.val === "^") {
-            splitCount++
-            return [p.east(), p.west()]
-          }
-          return p
-        })
-        .flat()
-        .unique()
-    }
-    return splitCount
-  }
-
-  part2 = (input: string) => {
-    const grid = input
-      .let(Grid.fromString)
-    const start = grid.points.find(p => p.val==="S")!
-    // console.log(start)
-    let paths = [{point: start, times: 1}]
-    for (const _ of range(0, grid.maxY-1)) {
-      paths = paths
-        .map(({point, times}) => ({point: point.south()!, times}))
-        .filter(({point}) => point !== undefined)
-        .map(({point, times}) => {
-          if (point.val === "^") {
-            return [
-              {point: point.east(), times},
-              {point: point.west(), times}
-            ]
-          }
-          return [{point, times}]
-        })
-        .flat()
-        .reduce((acc, {point, times}) => {
-          const found = acc.find(item => item.point == point)
-          if (found) {
-            found.times += times
-          } else {
-            return [...acc, {point, times}]
-          }
-          return acc
-        },[] as {point: Point<string>, times: number}[])
-    }
-    return paths.map(({times}) => times).sum()
-  }
+  part1 = (input: string) => traverse(input);
+  part2 = (input: string) => traverse(input, true);
 }
+
+const traverse = (input: string, timelines = false) => {
+  const grid = Grid.fromString(input);
+  const start = grid.points.find((p) => p.val === "S")!;
+  let paths = [{ point: start, times: 1 }];
+  let timesSplit = 0;
+  range(0, grid.maxY - 1).forEach(() => {
+    paths = paths
+      .map(({ point, times }) => ({ point: point.south()!, times }))
+      .flatMap(({ point, times }) =>
+        point.val == "^"
+          ? [
+              { point: point.east()!, times },
+              { point: point.west()!, times },
+            ].also(() => timesSplit++)
+          : [{ point, times }]
+      )
+      .reduce((acc, { point, times }) => {
+        const found = acc.find((item) => item.point === point);
+        if (!found) return [...acc, { point, times }];
+        found.times += times;
+        return acc;
+      }, [] as { point: Point<string>; times: number }[]);
+  });
+  return timelines ? paths.map(({ times }) => times).sum() : timesSplit;
+};
 
 if (import.meta.main) {
   new Day07().run();
