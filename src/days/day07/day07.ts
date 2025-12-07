@@ -1,4 +1,4 @@
-import { Grid } from "../../utils/grid.ts";
+import { Grid, Point } from "../../utils/grid.ts";
 import Day from "../day.ts";
 
 export default class Day07 extends Day {
@@ -10,34 +10,29 @@ export default class Day07 extends Day {
   part2 = (input: string) => traverse(input).timelines;
 }
 
-const traverse = (input: string) =>
+const traverse = (input: string, timesSplit = 0) =>
   input
-    .let(Grid.fromString)
+    .let((i) => Grid.fromString(i) as Grid<string | number>)
     .points
-    .reduce((acc, p) => {
-      const top = acc.newGrid[p.y - 1]?.[p.x] ?? 0;
-      const topLeft = acc.newGrid[p.y - 1]?.[p.x - 1] ?? 0;
-      const topRight = acc.newGrid[p.y - 1]?.[p.x + 1] ?? 0;
-      let newVal = 0;
+    .map((p) => p.also(() => {
       switch (p.val) {
         case "S":
-          newVal = 1;
+          p.val = 1;
           break;
         case "^":
-          if (top > 0) acc.timesSplit++;
+          if (p.north()?.val ?? 0 > 0) timesSplit++;
           break;
         default:
-          newVal += top;
-          if (p.east()?.val === "^") newVal += topRight;
-          if (p.west()?.val === "^") newVal += topLeft;
-      }
-      if (!acc.newGrid[p.y]) acc.newGrid[p.y] = [];
-      acc.newGrid[p.y][p.x] = newVal;
-      return acc;
-    }, { newGrid: [] as number[][], timesSplit: 0 })
-    .let(({ newGrid, timesSplit }) => ({
-      timelines: newGrid.at(-1)!.sum(),
+          p.val = Number(p.north()?.val) || 0;
+          if (p.east()?.val === "^") p.val += Number(p.northeast()?.val) || 0;
+          if (p.west()?.val === "^") p.val += Number(p.northwest()?.val) || 0;
+      }}))
+    .let((points) => ({
       timesSplit,
+      timelines: points
+        .filter((p) => p.y == input.lines().length - 1 && Number(p.val))
+        .map((p) => Number(p.val))
+        .sum(),
     }));
 
 if (import.meta.main) {
