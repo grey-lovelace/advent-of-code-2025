@@ -1,4 +1,4 @@
-import { Grid, Point } from "../../utils/grid.ts";
+import { Grid } from "../../utils/grid.ts";
 import Day from "../day.ts";
 
 export default class Day07 extends Day {
