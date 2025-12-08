@@ -70,12 +70,3 @@ export class Point<T extends string | number> {
   manhattanDistance = (point: Point<T>) =>
     Math.abs(this.x - point.x) + Math.abs(this.y - point.y);
 }
-
-export const orthogonalDirections = ["north", "east", "south", "west"] as const;
-export const diagonalDirections = [
-  "northeast",
-  "southeast",
-  "northwest",
-  "southwest",
-] as const;
-export const directions = [...orthogonalDirections, ...diagonalDirections];
